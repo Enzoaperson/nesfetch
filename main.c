@@ -6,6 +6,13 @@
 //char header[11] = {'S', 'M', 'S', 'B', 'E', 'T','T','E','R', '\0'}; //Invalid
 
 int main(int argc, char *argv[]){
+	
+	// Checking if any arguments are passed to the program
+	if (argv[1] == NULL){
+		printf("Please give me a file to analyze!\n");
+		return 0;
+	}
+
      	//Getting the file ready	
 	FILE * Nes_Rom;
 	char *filename = argv[1];
@@ -34,8 +41,10 @@ int main(int argc, char *argv[]){
 	    	printf("	Total size = %d Kib\n", header[4] * 16 + header[5] * 8);
 	
 		//MAPPER
+		int mapperid = header[6] >> 4; mapperid += header[7] & 0b11110000; // The first half of this line creates the variable with the lower 4 bits of the mapper ID. The second then adds the upper 4 after bitwise &ing them so that if other bits were set in byte 7 nothing would conflict.
 		printf("Mapper:\n");
-		printf("	Mapper Number = %d\n", header[6] >> 4); //Might add a lookup table where the number can converted to MMC
+		printf("	Mapper ID = %d\n", mapperid);
+
 		
 		//Other Informtion
 		printf("Other:\n");
@@ -59,9 +68,10 @@ int main(int argc, char *argv[]){
 		else{
 		printf("	ROM has no battery-backed RAM or other persistent memory \n");
 		}
+		if(mapperid == 20){
+		printf("	ROM is a Famicom Disk System ROM \n");
+		}
 
-
-	//File is not valid .NES file
 	}else{
     	printf("Error: Not a valid .NES file!\n");
 	}
