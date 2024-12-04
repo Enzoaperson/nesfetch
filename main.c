@@ -46,10 +46,10 @@ int main(int argc, char *argv[]){
 
 		//Screen Mirroring
 		if(header[6] & mirrormask){
-		printf("	Horizontal mirrored\n");
+		printf("	Vertically mirrored\n");
 		}
 		else{
-		printf("	Vertically mirrored (or mapper controlled)\n");
+		printf("	Horizontally mirrored (or mapper controlled)\n");
 		}
 		
 		//Battery/Persistent RAM check
