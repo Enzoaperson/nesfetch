@@ -1,21 +1,22 @@
-// .NES rom file analyzer
+// .NES rom file analyzer by Enzo
 #include <stdio.h>
-
 
 // Fake headers (for testing)
 //char header[7] = {'N', 'E', 'S', '.', 2, 1, '\0'}; //Valid
 //char header[11] = {'S', 'M', 'S', 'B', 'E', 'T','T','E','R', '\0'}; //Invalid
 
 int main(int argc, char *argv[]){
-
      	//Getting the file ready	
 	FILE * Nes_Rom;
 	char *filename = argv[1];
-	Nes_Rom = fopen (argv[1], "rb");	
-	if (Nes_Rom == NULL) { //error checking
+	Nes_Rom = fopen (argv[1], "rb");
+
+	//Checking if a file is actually being used	
+	if (Nes_Rom == NULL) { 		
 	   printf("Error: opening ROM file! \n");
 	   return 1;
 	}
+
 	//Putting the header in memory
 	char *header;
 	fgets(header, 16, Nes_Rom);
@@ -31,43 +32,27 @@ int main(int argc, char *argv[]){
 	    	printf("	PRG ROM = %d Kib\n", header[4] * 16);
 	    	printf("	CHR ROM = %d Kib\n", header[5] * 8);
 	    	printf("	Total size = %d Kib\n", header[4] * 16 + header[5] * 8);
-   /*	 
-    	// Mapper Section (This will be completed later, so its commented out for now)
-    	printf("Mapper:\n");
-//    	printf("	Mapper is ");
-	printf("%c", header[6]);
-	int binaryNumber = 15;
-	int bitposition = 3;
-
-	int mask = 1 << bitposition;
-
-	int result = binaryNumber & mask;
-
-	if (result = binaryNumber & mask){
-		printf("Bit %d is set.\n", bitposition);
-	} else {
-		printf("bit %d is not set.\n", bitposition);
-	}
 	
-
-/*	
-    	switch (binaryNumber){
-		case 1: puts("Mapper1");
-//        	default: puts ("Unknown Mapper");
-*/ 
+		//MAPPER
+		printf("Mapper:\n");
+		printf("	Mapper Number = %d\n", header[6] >> 4); //Might add a lookup table where the number can converted to MMC
+		
+		//Other Informtion
 		printf("Other:\n");
 
 		//Masks
 		int batterymask = 1 << 1;
 		int mirrormask = 1;
 
+		//Screen Mirroring
 		if(header[6] & mirrormask){
 		printf("	Horizontal mirrored\n");
 		}
 		else{
 		printf("	Vertically mirrored (or mapper controlled)\n");
 		}
-
+		
+		//Battery/Persistent RAM check
 		if(header[6] & batterymask){
 		printf("	ROM has battery-backed RAM or other persistent memory \n");
 		}
@@ -82,4 +67,3 @@ int main(int argc, char *argv[]){
 	}
 	return 0;
 }
-
