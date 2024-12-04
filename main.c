@@ -45,7 +45,6 @@ int main(int argc, char *argv[]){
 		printf("Mapper:\n");
 		printf("	Mapper ID = %d\n", mapperid);
 
-		
 		//Other Informtion
 		printf("Other:\n");
 
