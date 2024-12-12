@@ -34,6 +34,8 @@ int main(int argc, char *argv[]){
 	if (header[0]=='N' && header[1]=='E' && header[2]=='S' && header[3]==26){
 		printf("File: %s\n", filename);
 
+		int nes20flag = header[7] >> 2 & 0b00000010; //Checks if ROM is NES 2.0 rather than a standard iNes Rom
+
 	    	//ROM Size
 	    	printf("ROMS:\n");
 	    	printf("	PRG ROM = %d Kib\n", header[4] * 16);
@@ -42,26 +44,27 @@ int main(int argc, char *argv[]){
 	
 		//MAPPER
 		int mapperid = header[6] >> 4; mapperid += header[7] & 0b11110000; // The first half of this line creates the variable with the lower 4 bits of the mapper ID. The second then adds the upper 4 after bitwise &ing them so that if other bits were set in byte 7 nothing would conflict.
+		if(nes20flag == 2){ // Adding the NES 2.0 Mapper informtion
+		mapperid += header[8] << 8;
+		}
 		printf("Mapper:\n");
 		printf("	Mapper ID = %d\n", mapperid);
 
 		//Other Informtion
 		printf("Other:\n");
 
-		//Masks
-		int batterymask = 1 << 1;
-		int mirrormask = 1;
+		//RIP MASKS
 
 		//Screen Mirroring
-		if(header[6] & mirrormask){
+		if(header[6] & 1){
 		printf("	Vertically mirrored\n");
 		}
 		else{
-		printf("	Horizontally mirrored (or mapper controlled)\n");
+		printf("	Horizontally mirrored\n");
 		}
 		
 		//Battery/Persistent RAM check
-		if(header[6] & batterymask){
+		if(header[6] & 2){
 		printf("	ROM has battery-backed RAM or other persistent memory \n");
 		}
 		else{
@@ -69,6 +72,12 @@ int main(int argc, char *argv[]){
 		}
 		if(mapperid == 20){
 		printf("	ROM is a Famicom Disk System ROM \n");
+		}
+		if(nes20flag == 2){
+		printf("	ROM is a NES 2.0 ROM \n");		
+		}
+		else{
+		printf("	ROM is an INES ROM \n");
 		}
 
 	}else{
